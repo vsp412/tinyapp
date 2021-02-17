@@ -20,13 +20,20 @@ app.post("/urls", (req, res) => {
   console.log(req.body);  
   const genRandStr = generateRandomString();
   urlDatabase[genRandStr] = req.body.longURL;
-  res.redirect('/urls/' + genRandStr);        
+  res.redirect(`/urls/${genRandStr}`);        
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL] 
   console.log(urlDatabase);
   res.redirect('/urls/');      
+});
+
+app.post("/urls/:id", (req, res) => {
+  const newLongURL = req.body.editedURL;
+  const shortURL = req.params.id;
+  urlDatabase[shortURL] = newLongURL;
+  res.redirect(`/urls/${shortURL}`)
 });
 
 app.get('/urls', (req, res) => {
