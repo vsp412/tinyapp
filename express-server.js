@@ -20,6 +20,8 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+
+
 app.post("/urls", (req, res) => {
   console.log(req.body);  
   const genRandStr = generateRandomString();
@@ -57,6 +59,11 @@ app.post('/logout',(req, res) => {
 
 });
 
+app.get('/register', (req, res) => { 
+  
+  res.render('registration');
+});
+
 app.get('/urls', (req, res) => {
  
   const templateVars = {urls : urlDatabase, username: req.cookies ? req.cookies['username'] : ''};
@@ -70,6 +77,8 @@ app.get('/urls/new', (req, res) => {
   const templateVars = {username: req.cookies ? req.cookies['username'] : ''};
   res.render('urls_new', templateVars);
 });
+
+
 
 app.get("/urls/:shortURL", (req, res) => {
   
