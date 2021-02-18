@@ -13,7 +13,7 @@
      
       </div>
     </div>
-    <% if (!user || user === undefined) { %>
+    <!-- <% if (!user || user === undefined) { %>
       <form action = "/login" method = "POST">
         <input type ="text" placeholder= "Enter a username" name="username" />
         <input type="submit" value="Submit" />
@@ -23,7 +23,9 @@
         <label for = "logout">Signed in as: <%= user['email'] %></label>
         <input type="submit" value="Logout" name = "logout" />
       </form>  
-    <% } %>
+    <% } %> -->
+    <a href = "/login">Login</a>
+    <a href = "/register">Register</a>
   </nav>
  
  
