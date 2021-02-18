@@ -2,9 +2,15 @@ function generateRandomString() {
   return Math.random().toString(36).slice(2).slice(0,7);
 }
 
-// function checkIfUserExist(user) {
-//   //return Math.random().toString(36).slice(2).slice(0,7);
-// }
+function checkIfUserExist(user) {
+  //return Math.random().toString(36).slice(2).slice(0,7);
+  for (let i in users) {
+    if (users[i]['email'] === user) {
+      return true;
+    }
+  }
+  return false;
+}
 
 
 
@@ -45,7 +51,7 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   if (!(email && password)) {
-    res.statusCode(400).send('Please enter email and password both');
+    res.status(400).send('Please enter email and password both');
   } 
   const userObj = {id: genRandStr, email: email, password: password};
   users[genRandStr] = userObj;
