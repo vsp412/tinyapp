@@ -46,8 +46,9 @@ app.post("/login", (req, res) => {
   res.cookie('username', uName);
   res.redirect('/urls');
 
-  
+
 });
+
 
 app.post('/logout',(req, res) => {
   res.clearCookie('username');
@@ -60,6 +61,7 @@ app.get('/urls', (req, res) => {
  
   const templateVars = {urls : urlDatabase, username: req.cookies ? req.cookies['username'] : ''};
   res.render('urls_index', templateVars);
+  
 });
 
 app.get('/urls/new', (req, res) => { 
