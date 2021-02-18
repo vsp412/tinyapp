@@ -107,7 +107,9 @@ app.post('/logout',(req, res) => {
 app.post("/urls", (req, res) => {
   console.log(req.body);  
   const genRandStr = generateRandomString();
-  urlDatabase[genRandStr] = req.body.longURL;
+  const u_id = req.cookies['user_id'];
+  urlDatabase[genRandStr] = { longURL : req.body.longURL, userID : u_id };
+  console.log(urlDatabase);
   res.redirect(`/urls/${genRandStr}`);        
 });
 
