@@ -68,11 +68,12 @@ app.post("/login", (req, res) => {
 
   if (!checkIfUserExist(email)) {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
-  } else {
-    if (checkIfUserExist(email) !== password) {
-      res.status(403).send('Passwords do not match. Please enter the correct password.');
-    }
-  }
+  } else if (checkIfUserExist(email) !== password) {
+    res.status(403).send('Passwords do not match. Please enter the correct password.');
+  } 
+
+
+  
 
     
 
