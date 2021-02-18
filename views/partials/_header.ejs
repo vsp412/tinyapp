@@ -19,12 +19,18 @@
         <!-- <span><a href = "/login">Login</a></span>
         <span><a href = "/register">Register</a></span>  -->
         
-        <form action="/login">
-          <input type="submit" value="Login" />
-        </form>
-        <form action="/register">
-          <input type="submit" value="Register" />
-        </form>
+        <span>
+          <form action="/login">
+            <input type="submit" value="Login" />
+          </form>
+        </span>
+
+        <span>
+          <form action="/register">
+            <input type="submit" value="Register" />
+          </form>
+        </span>  
+        
       </div>
     <% } else { %>
       <form action  = "/logout" method = "POST">
