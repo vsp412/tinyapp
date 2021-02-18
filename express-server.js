@@ -121,12 +121,43 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
+
+  // let userObj;
+  // if (!(req.cookies && req.cookies['user_id'])) {
+  //   const message = "Please log in to an existing account or register for a new one."
+  //   res.render('login', {user : userObj, message : message});
+  // } else if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL]['userID']) {
+  //   const message = "This delete operation cannot be done by this account. Please use a different account which is the correct login.";
+  //   res.render('login', {user : userObj, message : message});
+  // }
+  // delete urlDatabase[req.params.shortURL] 
+  // console.log(urlDatabase);
+  // res.redirect('/urls/');      
+  // let userObj;
+  // if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL][userID]) {
+  //   const message = "This delete operation cannot be done by this account. Please use a different account which is the correct login.";
+  //   res.render('login', {user : userObj, message : message});
+  // } else {
+  //   delete urlDatabase[req.params.shortURL] 
+  //   console.log(urlDatabase);
+  //   res.redirect('/urls');  
+  // }
   delete urlDatabase[req.params.shortURL] 
   console.log(urlDatabase);
-  res.redirect('/urls/');      
+  res.redirect('/urls'); 
+
 });
 
 app.post("/urls/:id", (req, res) => {
+  // let userObj;
+  // if (!(req.cookies && req.cookies['user_id'])) {
+  //   const message = "Please log in to an existing account or register for a new one."
+  //   res.render('login', {user : userObj, message : message});
+  // } else if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL]['userID']) {
+  //   const message = "This delete operation cannot be done by this account. Please use a different account which is the correct login.";
+  //   res.render('login', {user : userObj, message : message});
+  // }
+
   const newLongURL = req.body.editedURL;
   const shortURL = req.params.id;
   urlDatabase[shortURL]['longURL'] = newLongURL;
@@ -205,8 +236,9 @@ app.get("/urls/:shortURL", (req, res) => {
     const message = "Please log in to an existing account or register for a new one."
     res.render('login', {user : userObj, message : message});
   } else if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL]['userID']) {
-    const message = "This module cannot be accessed by this account. Please use a different account which is the correct login.";
-    res.render('login', {user : userObj, message : message});
+    //const message = "This module cannot be accessed by this account. Please use a different account which is the correct login.";
+   //res.redirect('login', {user : userObj, message : message});
+   res.redirect('/urls'); 
   }
 
   let u_id = req.cookies['user_id'];
