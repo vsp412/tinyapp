@@ -5,12 +5,22 @@ function generateRandomString() {
 function checkIfUserExist(user) {
   for (let i in users) {
     if (users[i]['email'] === user) {
-      return users[i]['password'];
+      return true;
     }
   }
   return false;
 }
 
+
+
+function getUsersPassword(user) {
+  for (let i in users) {
+    if (users[i]['email'] === user) {
+      return users[i]['password'];
+    }
+  }
+  return false;
+}
 
 
 const express = require("express");
@@ -68,18 +78,10 @@ app.post("/login", (req, res) => {
 
   if (!checkIfUserExist(email)) {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
-  } else if (checkIfUserExist(email) !== password) {
+  } else if (getUsersPassword(email) !== password) {
     res.status(403).send('Passwords do not match. Please enter the correct password.');
   } 
-
-
-  
-
-    
-
-  
-  res.redirect('/urls');
-
+ 
 
 });
 
