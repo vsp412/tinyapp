@@ -169,6 +169,8 @@ app.get('/urls/new', (req, res) => {
     let u_id = req.cookies['user_id'];
     userObj = users[u_id];
     
+  } else {
+    res.redirect('/login');
   }
   
   const templateVars = {user : userObj};
