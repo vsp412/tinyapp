@@ -13,21 +13,19 @@
      
       </div>
     </div>
-    <!-- <% if (!user || user === undefined) { %>
-      <form action = "/login" method = "POST">
-        <input type ="text" placeholder= "Enter a username" name="username" />
-        <input type="submit" value="Submit" />
-      </form>
+    <% if (!user || user === undefined) { %>
+      
+      <div>
+        <span><a href = "/login">Login</a></span>
+        <span><a href = "/register">Register</a></span> 
+      </div>
     <% } else { %>
       <form action  = "/logout" method = "POST">
         <label for = "logout">Signed in as: <%= user['email'] %></label>
         <input type="submit" value="Logout" name = "logout" />
       </form>  
-    <% } %> -->
-    <div>
-     <span><a href = "/login">Login</a></span>
-     <span><a href = "/register">Register</a></span> 
-    </div>
+    <% } %>
+    
   </nav>
  
  
