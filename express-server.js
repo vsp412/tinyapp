@@ -31,6 +31,15 @@ function getUsersID(user) {
   return false;
 }
 
+function urlsForUser(id) {
+  let userURLS = {};
+  for (let i in urlDatabase) {
+    if (urlDatabase[i]['userID'] === id) {
+      userURLS[i] = {longURL : urlDatabase[i]['longURL'], userID : urlDatabase[i]['userID']};
+    }
+  }
+  return userURLS;
+}
 
 
 
@@ -48,7 +57,7 @@ app.set("view engine", "ejs");
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" }
 };
 
 const users = { 
@@ -164,8 +173,9 @@ app.get('/urls', (req, res) => {
   
   let u_id = req.cookies['user_id'];
   userObj = users[u_id]; 
-  
-  const templateVars = {urls : urlDatabase, user : userObj};
+  const urlsByUser = urlsForUser(u_id);
+  console.log(urlsByUser);
+  const templateVars = {urls : urlsByUser, user : userObj};
   res.render('urls_index', templateVars);
   
 });
