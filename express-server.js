@@ -59,7 +59,8 @@ app.post("/register", (req, res) => {
   users[genRandStr] = userObj;
   res.cookie('user_id', genRandStr);
   console.log(users);
-  res.redirect('/urls/');        
+  res.redirect('/urls/'); 
+
 });
 
 app.post("/urls", (req, res) => {
@@ -102,6 +103,11 @@ app.post('/logout',(req, res) => {
 app.get('/register', (req, res) => { 
   
   res.render('registration');
+});
+
+app.get('/login', (req, res) => { 
+  
+  res.render('login');
 });
 
 app.get('/urls', (req, res) => {
