@@ -2,6 +2,12 @@ function generateRandomString() {
   return Math.random().toString(36).slice(2).slice(0,7);
 }
 
+// function checkIfUserExist(user) {
+//   //return Math.random().toString(36).slice(2).slice(0,7);
+// }
+
+
+
 
 const express = require("express");
 const app = express();
@@ -38,6 +44,9 @@ app.post("/register", (req, res) => {
   const genRandStr = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
+  if (!(email && password)) {
+    res.statusCode(400).send('Please enter email and password both');
+  } 
   const userObj = {id: genRandStr, email: email, password: password};
   users[genRandStr] = userObj;
   res.cookie('user_id', genRandStr);
@@ -91,10 +100,8 @@ app.get('/urls', (req, res) => {
   let userObj;
   if (req.cookies && req.cookies['user_id']) {
     let u_id = req.cookies['user_id'];
-    userObj = users[u_id];
-    
-  }
-  
+    userObj = users[u_id];    
+  } 
   const templateVars = {urls : urlDatabase, user : userObj};
   res.render('urls_index', templateVars);
   
