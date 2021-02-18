@@ -40,8 +40,9 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   const userObj = {id: genRandStr, email: email, password: password};
   users[genRandStr] = userObj;
+  res.cookie('user_id', genRandStr);
   
-  res.redirect(`/urls/${genRandStr}`);        
+  res.redirect('/urls/');        
 });
 
 app.post("/urls", (req, res) => {
