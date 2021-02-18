@@ -52,6 +52,8 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   if (!(email && password)) {
     res.status(400).send('Please enter email and password both');
+  } else if (checkIfUserExist(email)) {
+    res.status(400).send(`The email ${email} already exist. Please register with a new email.`);
   } 
   const userObj = {id: genRandStr, email: email, password: password};
   users[genRandStr] = userObj;
