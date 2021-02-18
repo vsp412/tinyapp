@@ -86,13 +86,11 @@ app.post("/login", (req, res) => {
   
   const email = req.body.email;
   const password = req.body.password;
-
   if (!checkIfUserExist(email)) {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
   } else if (getUsersPassword(email) !== password) {
     res.status(403).send('Passwords do not match. Please enter the correct password.');
   } 
- 
   const u_id = getUsersID(email); 
   res.cookie('user_id', u_id); 
   console.log(users); 
@@ -105,7 +103,6 @@ app.post('/logout',(req, res) => {
   res.redirect('/urls');
 
 });
-
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  
@@ -133,13 +130,26 @@ app.post("/urls/:id", (req, res) => {
 
 
 app.get('/register', (req, res) => { 
+  let userObj;
+  if (req.cookies && req.cookies['user_id']) {
+    let u_id = req.cookies['user_id'];
+    userObj = users[u_id];    
+  } 
+  const templateVars = {user : userObj};
+  res.render('registration', templateVars);
   
-  res.render('registration');
 });
 
 app.get('/login', (req, res) => { 
-  
-  res.render('login');
+  let userObj;
+  if (req.cookies && req.cookies['user_id']) {
+    let u_id = req.cookies['user_id'];
+    userObj = users[u_id];    
+  } 
+  const templateVars = {user : userObj};
+  res.render('login', templateVars);
+ 
+ 
 });
 
 app.get('/urls', (req, res) => {
