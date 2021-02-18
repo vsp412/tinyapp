@@ -161,7 +161,17 @@ app.get('/login', (req, res) => {
  
  
 });
-
+// app.get('/urls', (req, res) => {
+//   let userObj;
+//   if (req.cookies && req.cookies['user_id']) {
+//     let u_id = req.cookies['user_id'];
+//     userObj = users[u_id]; 
+//   } 
+  
+//   const templateVars = {urls : urlDatabase, user : userObj};
+//   res.render('urls_index', templateVars);
+  
+// });
 app.get('/urls', (req, res) => {
   let userObj;
   if (!(req.cookies && req.cookies['user_id'])) {
@@ -178,18 +188,6 @@ app.get('/urls', (req, res) => {
   
 });
 
-// app.get('/urls', (req, res) => {
-//   let userObj;
-//   if (req.cookies && req.cookies['user_id']) {
-//     let u_id = req.cookies['user_id'];
-//     userObj = users[u_id]; 
-//   } 
-  
-//   const templateVars = {urls : urlDatabase, user : userObj};
-//   res.render('urls_index', templateVars);
-  
-// });
-
 app.get('/urls/new', (req, res) => { 
   let userObj;
   if (req.cookies && req.cookies['user_id']) {
@@ -201,18 +199,34 @@ app.get('/urls/new', (req, res) => {
   const templateVars = {user : userObj};
   res.render('urls_new', templateVars);
 });
-
-
-
 app.get("/urls/:shortURL", (req, res) => {
   let userObj;
-  if (req.cookies && req.cookies['user_id']) {
-    let u_id = req.cookies['user_id'];
-    userObj = users[u_id]; 
-  }  
-  const templateVars = {shortURL: req.params.shortURL, urls: urlDatabase, user : userObj};
-  res.render("urls_show", templateVars);
+  if (!(req.cookies && req.cookies['user_id'])) {
+    const message = "Please log in to an existing account or register for a new one."
+    res.render('login', {user : userObj, message : message});
+  } else if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL]['userID']) {
+    const message = "This module cannot be accessed by this account. Please use a different account which is the correct login.";
+    res.render('login', {user : userObj, message : message});
+  }
+
+  let u_id = req.cookies['user_id'];
+  userObj = users[u_id]; 
+  const urlsByUser = urlsForUser(u_id);
+  console.log(urlsByUser);
+  const templateVars = {shortURL: req.params.shortURL, urls : urlsByUser, user : userObj};
+  res.render('urls_show', templateVars);
+  
 });
+
+// app.get("/urls/:shortURL", (req, res) => {
+//   let userObj;
+//   if (req.cookies && req.cookies['user_id']) {
+//     let u_id = req.cookies['user_id'];
+//     userObj = users[u_id]; 
+//   }  
+//   const templateVars = {shortURL: req.params.shortURL, urls: urlDatabase, user : userObj};
+//   res.render("urls_show", templateVars);
+// });
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL]['longURL'];
