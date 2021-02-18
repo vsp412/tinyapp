@@ -22,6 +22,17 @@ function getUsersPassword(user) {
   return false;
 }
 
+function getUsersID(user) {
+  for (let i in users) {
+    if (users[i]['email'] === user) {
+      return users[i]['id'];
+    }
+  }
+  return false;
+}
+
+
+
 
 const express = require("express");
 const app = express();
