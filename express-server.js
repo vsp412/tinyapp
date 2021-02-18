@@ -3,15 +3,13 @@ function generateRandomString() {
 }
 
 function checkIfUserExist(user) {
-  //return Math.random().toString(36).slice(2).slice(0,7);
   for (let i in users) {
     if (users[i]['email'] === user) {
-      return true;
+      return users[i]['password'];
     }
   }
   return false;
 }
-
 
 
 
@@ -63,6 +61,27 @@ app.post("/register", (req, res) => {
 
 });
 
+app.post("/login", (req, res) => {
+  
+  const email = req.body.email;
+  const password = req.body.password;
+
+  if (!checkIfUserExist(email)) {
+    res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
+  } else {
+    if (checkIfUserExist(email) !== password) {
+      res.status(403).send('Passwords do not match. Please enter the correct password.');
+    }
+  }
+
+    
+
+  
+  res.redirect('/urls');
+
+
+});
+
 app.post("/urls", (req, res) => {
   console.log(req.body);  
   const genRandStr = generateRandomString();
@@ -83,14 +102,7 @@ app.post("/urls/:id", (req, res) => {
   res.redirect(`/urls/${shortURL}`)
 });
 
-app.post("/login", (req, res) => {
-  
-  const uName = req.body.username; 
-  res.cookie('username', uName);
-  res.redirect('/urls');
 
-
-});
 
 
 app.post('/logout',(req, res) => {
