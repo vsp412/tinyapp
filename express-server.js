@@ -20,7 +20,29 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
 
+app.post("/register", (req, res) => {
+  
+  const genRandStr = generateRandomString();
+  const email = req.body.email;
+  const password = req.body.password;
+  const userObj = {id: genRandStr, email: email, password: password};
+  users[genRandStr] = userObj;
+  
+  res.redirect(`/urls/${genRandStr}`);        
+});
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  
