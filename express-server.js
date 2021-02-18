@@ -94,7 +94,7 @@ app.get('/urls', (req, res) => {
     userObj = users[u_id];
     
   }
-  console.log(userObj);
+  
   const templateVars = {urls : urlDatabase, user : userObj};
   res.render('urls_index', templateVars);
   
@@ -107,7 +107,7 @@ app.get('/urls/new', (req, res) => {
     userObj = users[u_id];
     
   }
-  console.log(userObj);
+  
   const templateVars = {user : userObj};
   res.render('urls_new', templateVars);
 });
@@ -121,7 +121,7 @@ app.get("/urls/:shortURL", (req, res) => {
     userObj = users[u_id];
     
   }
-  console.log(userObj);
+  
   const templateVars = {shortURL: req.params.shortURL, urls: urlDatabase, user : userObj};
   res.render("urls_show", templateVars);
 });
