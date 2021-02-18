@@ -93,8 +93,20 @@ app.post("/login", (req, res) => {
     res.status(403).send('Passwords do not match. Please enter the correct password.');
   } 
  
+  const u_id = getUsersID(email); 
+  res.cookie('user_id', u_id); 
+  console.log(users); 
+  res.redirect('/urls/');
 
 });
+
+app.post('/logout',(req, res) => {
+  res.clearCookie('user_id');
+  
+  res.redirect('/urls');
+
+});
+
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  
@@ -119,12 +131,7 @@ app.post("/urls/:id", (req, res) => {
 
 
 
-app.post('/logout',(req, res) => {
-  res.clearCookie('username');
-  
-  res.redirect('/urls');
 
-});
 
 app.get('/register', (req, res) => { 
   
