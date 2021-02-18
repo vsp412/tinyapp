@@ -101,14 +101,14 @@ app.get('/urls', (req, res) => {
 });
 
 app.get('/urls/new', (req, res) => { 
-  // let userObj;
-  // if (req.cookies && req.cookies['user_id']) {
-  //   let u_id = req.cookies['user_id'];
-  //   userObj = users[u_id];
+  let userObj;
+  if (req.cookies && req.cookies['user_id']) {
+    let u_id = req.cookies['user_id'];
+    userObj = users[u_id];
     
-  // }
-  // console.log(userObj);
-  const templateVars = {username: req.cookies ? req.cookies['username'] : ''};
+  }
+  console.log(userObj);
+  const templateVars = {user : userObj};
   res.render('urls_new', templateVars);
 });
 
