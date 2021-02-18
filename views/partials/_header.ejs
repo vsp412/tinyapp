@@ -13,14 +13,14 @@
      
       </div>
     </div>
-    <% if (!username || username === undefined) { %>
+    <% if (!user || user === undefined) { %>
       <form action = "/login" method = "POST">
         <input type ="text" placeholder= "Enter a username" name="username" />
         <input type="submit" value="Submit" />
       </form>
     <% } else { %>
       <form action  = "/logout" method = "POST">
-        <label for = "logout">Signed in as: <%= username %></label>
+        <label for = "logout">Signed in as: <%= user['email'] %></label>
         <input type="submit" value="Logout" name = "logout" />
       </form>  
     <% } %>
