@@ -84,7 +84,7 @@ app.post("/register", (req, res) => {
   const userObj = {id: genRandStr, email: email, password: password};
   users[genRandStr] = userObj;
   res.cookie('user_id', genRandStr);
-  console.log(users);
+ // console.log(users);
   res.redirect('/urls/'); 
 
 });
@@ -100,7 +100,7 @@ app.post("/login", (req, res) => {
   } 
   const u_id = getUsersID(email); 
   res.cookie('user_id', u_id); 
-  console.log(users); 
+ // console.log(users); 
   res.redirect('/urls/');
 
 });
@@ -115,59 +115,38 @@ app.post("/urls", (req, res) => {
   console.log(req.body);  
   const genRandStr = generateRandomString();
   const u_id = req.cookies['user_id'];
+  console.log(u_id)
+  console.log("*******");
   urlDatabase[genRandStr] = { longURL : req.body.longURL, userID : u_id };
-  console.log(urlDatabase);
+  //console.log(urlDatabase);
   res.redirect(`/urls/${genRandStr}`);        
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-
-  // let userObj;
-  // if (!(req.cookies && req.cookies['user_id'])) {
-  //   const message = "Please log in to an existing account or register for a new one."
-  //   res.render('login', {user : userObj, message : message});
-  // } else if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL]['userID']) {
-  //   const message = "This delete operation cannot be done by this account. Please use a different account which is the correct login.";
-  //   res.render('login', {user : userObj, message : message});
-  // }
-  // delete urlDatabase[req.params.shortURL] 
-  // console.log(urlDatabase);
-  // res.redirect('/urls/');      
-  // let userObj;
-  // if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL][userID]) {
-  //   const message = "This delete operation cannot be done by this account. Please use a different account which is the correct login.";
-  //   res.render('login', {user : userObj, message : message});
-  // } else {
-  //   delete urlDatabase[req.params.shortURL] 
-  //   console.log(urlDatabase);
-  //   res.redirect('/urls');  
-  // }
-  delete urlDatabase[req.params.shortURL] 
-  console.log(urlDatabase);
+  const shortURL = req.params.shortURL;
+  const u_id = req.cookies['user_id'];
+  const userID = urlDatabase[shortURL].userID;
+  console.log(shortURL);
+  console.log('Cookies', req.cookies) //getting printed as undefined
+  console.log(userID)
+  console.log(u_id === userID);
+  if (u_id !== userID) {
+    res.status(403).send('Please log in to an existing account or register if you need to perform this operation');
+  } else {
+    delete urlDatabase[shortURL]; 
+  }
+  
   res.redirect('/urls'); 
 
 });
 
 app.post("/urls/:id", (req, res) => {
-  // let userObj;
-  // if (!(req.cookies && req.cookies['user_id'])) {
-  //   const message = "Please log in to an existing account or register for a new one."
-  //   res.render('login', {user : userObj, message : message});
-  // } else if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL]['userID']) {
-  //   const message = "This delete operation cannot be done by this account. Please use a different account which is the correct login.";
-  //   res.render('login', {user : userObj, message : message});
-  // }
-
+  
   const newLongURL = req.body.editedURL;
   const shortURL = req.params.id;
   urlDatabase[shortURL]['longURL'] = newLongURL;
   res.redirect(`/urls/${shortURL}`)
 });
-
-
-
-
-
 
 app.get('/register', (req, res) => { 
   let userObj;
@@ -192,17 +171,7 @@ app.get('/login', (req, res) => {
  
  
 });
-// app.get('/urls', (req, res) => {
-//   let userObj;
-//   if (req.cookies && req.cookies['user_id']) {
-//     let u_id = req.cookies['user_id'];
-//     userObj = users[u_id]; 
-//   } 
-  
-//   const templateVars = {urls : urlDatabase, user : userObj};
-//   res.render('urls_index', templateVars);
-  
-// });
+
 app.get('/urls', (req, res) => {
   let userObj;
   if (!(req.cookies && req.cookies['user_id'])) {
@@ -213,7 +182,7 @@ app.get('/urls', (req, res) => {
   let u_id = req.cookies['user_id'];
   userObj = users[u_id]; 
   const urlsByUser = urlsForUser(u_id);
-  console.log(urlsByUser);
+ // console.log(urlsByUser);
   const templateVars = {urls : urlsByUser, user : userObj};
   res.render('urls_index', templateVars);
   
@@ -244,7 +213,7 @@ app.get("/urls/:shortURL", (req, res) => {
   let u_id = req.cookies['user_id'];
   userObj = users[u_id]; 
   const urlsByUser = urlsForUser(u_id);
-  console.log(urlsByUser);
+ // console.log(urlsByUser);
   const templateVars = {shortURL: req.params.shortURL, urls : urlsByUser, user : userObj};
   res.render('urls_show', templateVars);
   
