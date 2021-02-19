@@ -91,7 +91,7 @@ app.post("/register", (req, res) => {
   const userObj = {id: genRandStr, email: email, password: hashedPassword};
   users[genRandStr] = userObj;
   //res.cookie('user_id', genRandStr);
-  res.session.user_id = genRandStr;
+  req.session.user_id = genRandStr;
   console.log(users);
   res.redirect('/urls/'); 
 
@@ -107,7 +107,7 @@ app.post("/login", (req, res) => {
   } else if (bcrypt.compareSync(password, hashedPassword)) {
     const u_id = getUsersID(email); 
     //res.cookie('user_id', u_id); 
-    res.session.user_id = u_id;
+    req.session.user_id = u_id;
   } else {
     res.status(403).send('Passwords do not match. Please enter the correct password.');
   }
@@ -117,7 +117,8 @@ app.post("/login", (req, res) => {
 });
 
 app.post('/logout',(req, res) => {
-  res.clearCookie('user_id');
+  //res.clearCookie('user_id');
+  req.session.user_id = "";
   res.redirect('/urls');
 
 });
@@ -125,7 +126,7 @@ app.post('/logout',(req, res) => {
 app.post("/urls", (req, res) => {
   console.log(req.body);  
   const genRandStr = generateRandomString();
-  const u_id = req.cookies['user_id'];
+  const u_id = req.session.user_id;
   console.log(u_id)
   console.log("*******");
   urlDatabase[genRandStr] = { longURL : req.body.longURL, userID : u_id };
@@ -134,7 +135,7 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
-  const u_id = req.cookies['user_id'];
+  const u_id = req.session.user_id;
   const userID = urlDatabase[shortURL].userID;
   // console.log(shortURL);
   // console.log('Cookies', req.cookies) //getting printed as undefined
@@ -152,7 +153,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.post("/urls/:id", (req, res) => {
   const shortURL = req.params.id;
-  const u_id = req.cookies['user_id'];
+  const u_id = req.session.user_id;
   const userID = urlDatabase[shortURL].userID;
   const newLongURL = req.body.editedURL;
   
@@ -167,8 +168,8 @@ app.post("/urls/:id", (req, res) => {
 
 app.get('/register', (req, res) => { 
   let userObj;
-  if (req.cookies && req.cookies['user_id']) {
-    let u_id = req.cookies['user_id'];
+  if (req.session && req.session.user_id) {
+    let u_id = req.session.user_id;
     userObj = users[u_id];    
   } 
   const templateVars = {user : userObj};
@@ -179,8 +180,8 @@ app.get('/register', (req, res) => {
 app.get('/login', (req, res) => { 
   let userObj;
   let message;
-  if (req.cookies && req.cookies['user_id']) {
-    let u_id = req.cookies['user_id'];
+  if (req.session && req.session.user_id) {
+    let u_id = req.session.user_id;
     userObj = users[u_id];    
   } 
   const templateVars = {user : userObj, message : message};
@@ -191,12 +192,12 @@ app.get('/login', (req, res) => {
 
 app.get('/urls', (req, res) => {
   let userObj;
-  if (!(req.cookies && req.cookies['user_id'])) {
+  if (!(req.session && req.session.user_id)) {
     const message = "Please log in to an existing account or register for a new one."
     res.render('login', {user : userObj, message : message});
   } 
   
-  let u_id = req.cookies['user_id'];
+  let u_id = req.session.user_id;
   userObj = users[u_id]; 
   const urlsByUser = urlsForUser(u_id);
  // console.log(urlsByUser);
@@ -207,8 +208,8 @@ app.get('/urls', (req, res) => {
 
 app.get('/urls/new', (req, res) => { 
   let userObj;
-  if (req.cookies && req.cookies['user_id']) {
-    let u_id = req.cookies['user_id'];
+  if (req.session && req.session.user_id) {
+    let u_id = req.session.user_id;
     userObj = users[u_id];   
   } else {
     res.redirect('/login');
@@ -218,16 +219,16 @@ app.get('/urls/new', (req, res) => {
 });
 app.get("/urls/:shortURL", (req, res) => {
   let userObj;
-  if (!(req.cookies && req.cookies['user_id'])) {
+  if (!(req.session && req.session.user_id)) {
     const message = "Please log in to an existing account or register for a new one."
     res.render('login', {user : userObj, message : message});
-  } else if (req.cookies['user_id'] !== urlDatabase[req.params.shortURL]['userID']) {
+  } else if (req.session.user_id !== urlDatabase[req.params.shortURL].userID) {
     //const message = "This module cannot be accessed by this account. Please use a different account which is the correct login.";
    //res.redirect('login', {user : userObj, message : message});
    res.redirect('/urls'); 
   }
 
-  let u_id = req.cookies['user_id'];
+  let u_id = req.session.user_id;
   userObj = users[u_id]; 
   const urlsByUser = urlsForUser(u_id);
  // console.log(urlsByUser);
