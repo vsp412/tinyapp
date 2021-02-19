@@ -125,7 +125,9 @@ app.post('/logout',(req, res) => {
 
 app.post("/urls", (req, res) => {
   
-  
+  if (!(req.session && req.session.user_id)) {
+    res.status(403).send('You must be logged in in order to create new tiny URLs');
+  } 
   
   console.log(req.body);  
   const genRandStr = generateRandomString();
