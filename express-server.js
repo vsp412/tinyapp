@@ -103,7 +103,8 @@ app.post("/login", (req, res) => {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
   } else if (bcrypt.compareSync(password, hashedPassword)) {
     const u_id = getUsersID(email); 
-    res.cookie('user_id', u_id); 
+    //res.cookie('user_id', u_id); 
+    res.session.user_id = u_id;
   } else {
     res.status(403).send('Passwords do not match. Please enter the correct password.');
   }
