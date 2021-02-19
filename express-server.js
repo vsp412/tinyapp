@@ -124,6 +124,9 @@ app.post('/logout',(req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+  
+  
+  
   console.log(req.body);  
   const genRandStr = generateRandomString();
   const u_id = req.session.user_id;
@@ -167,23 +170,22 @@ app.post("/urls/:id", (req, res) => {
 });
 
 
-// app.get('/', (req, res) => {
-//   let userObj;
-//   if (!(req.session && req.session.user_id)) {
-//     // const message = "Please log in to an existing account or register for a new one."
-//     // res.render('login', {user : userObj, message : message});
-//     res.status(403).send('<h3>You must be logged in in order to view your URLs</h3><p>Click <a href = "http://localhost:8080/login">here</a> to login or register an account</p>');
+app.get('/', (req, res) => {
+  let userObj;
+  if (!(req.session && req.session.user_id)) {
+    
+    //res.status(403).send('<h3>You must be logged in in order to view your URLs</h3><p>Click <a href = "http://localhost:8080/login">here</a> to login or register an account</p>');
+    res.redirect('/login');
+  } 
   
-//   } 
+  let u_id = req.session.user_id;
+  userObj = users[u_id]; 
+  const urlsByUser = urlsForUser(u_id);
+
+  const templateVars = {urls : urlsByUser, user : userObj};
+  res.render('urls_index', templateVars);
   
-//   let u_id = req.session.user_id;
-//   userObj = users[u_id]; 
-//   const urlsByUser = urlsForUser(u_id);
-//  // console.log(urlsByUser);
-//   const templateVars = {urls : urlsByUser, user : userObj};
-//   res.render('urls_index', templateVars);
-  
-// });
+});
 
 app.get('/register', (req, res) => { 
   let userObj;
@@ -244,6 +246,7 @@ app.get("/urls/:shortURL", (req, res) => {
   
     res.status(403).send('<h3>You must be logged in in order to view your URLs</h3><p>Click <a href = "http://localhost:8080/login">here</a> to login or register an account</p>');
   } else if (!checkIfURLExist(req.params.shortURL, urlDatabase)) {
+
     res.status(403).send(`<h3>No URL ${req.params.shortURL} belonging to any user found in our database. </h3>`);
      
   } else if (req.session.user_id !== urlDatabase[req.params.shortURL].userID) {
@@ -260,17 +263,15 @@ app.get("/urls/:shortURL", (req, res) => {
   
 });
 
-// app.get("/urls/:shortURL", (req, res) => {
-//   let userObj;
-//   if (req.cookies && req.cookies['user_id']) {
-//     let u_id = req.cookies['user_id'];
-//     userObj = users[u_id]; 
-//   }  
-//   const templateVars = {shortURL: req.params.shortURL, urls: urlDatabase, user : userObj};
-//   res.render("urls_show", templateVars);
-// });
 
 app.get("/u/:shortURL", (req, res) => {
+
+
+  if (!checkIfURLExist(req.params.shortURL, urlDatabase)) {
+
+    res.status(403).send(`<h3>No URL ${req.params.shortURL} was found in our database. </h3>`);
+     
+  }
   const longURL = urlDatabase[req.params.shortURL]['longURL'];
   res.redirect(longURL);
 });
