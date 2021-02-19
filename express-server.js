@@ -50,7 +50,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 //const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
-app.use(cookieSession());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['crypto', 'mining is', 'awesome']
+}))
 
 const bcrypt = require('bcrypt');
 
