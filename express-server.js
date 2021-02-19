@@ -87,7 +87,7 @@ app.post("/register", (req, res) => {
   const userObj = {id: genRandStr, email: email, password: hashedPassword};
   users[genRandStr] = userObj;
   res.cookie('user_id', genRandStr);
- // console.log(users);
+  console.log(users);
   res.redirect('/urls/'); 
 
 });
@@ -96,14 +96,16 @@ app.post("/login", (req, res) => {
   
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = getUsersPassword(email);
   if (!checkIfUserExist(email)) {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
-  } else if (getUsersPassword(email) !== password) {
+  } else if (bcrypt.compareSync(password, hashedPassword)) {
+    const u_id = getUsersID(email); 
+    res.cookie('user_id', u_id); 
+  } else {
     res.status(403).send('Passwords do not match. Please enter the correct password.');
-  } 
-  const u_id = getUsersID(email); 
-  res.cookie('user_id', u_id); 
- // console.log(users); 
+  }
+  //console.log(users); 
   res.redirect('/urls/');
 
 });
