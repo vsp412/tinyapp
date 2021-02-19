@@ -51,6 +51,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
+const bcrypt = require('bcrypt');
+
 app.set("view engine", "ejs");
 
 const urlDatabase = {
@@ -76,12 +78,13 @@ app.post("/register", (req, res) => {
   const genRandStr = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
   if (!(email && password)) {
     res.status(400).send('Please enter email and password both');
   } else if (checkIfUserExist(email)) {
     res.status(400).send(`The email ${email} already exist. Please register with a new email.`);
   } 
-  const userObj = {id: genRandStr, email: email, password: password};
+  const userObj = {id: genRandStr, email: email, password: hashedPassword};
   users[genRandStr] = userObj;
   res.cookie('user_id', genRandStr);
  // console.log(users);
