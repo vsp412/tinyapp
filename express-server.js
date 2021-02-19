@@ -190,7 +190,8 @@ app.get('/urls', (req, res) => {
   if (!(req.session && req.session.user_id)) {
     // const message = "Please log in to an existing account or register for a new one."
     // res.render('login', {user : userObj, message : message});
-    res.status(403).send('<h3>You must be logged in in order to view your URLs</h3>');
+    res.status(403).send('<h3>You must be logged in in order to view your URLs</h3><p>Click <a href = "http://localhost:8080/login">here</a> to login or register an account</p>');
+  
   } 
   
   let u_id = req.session.user_id;
@@ -216,12 +217,15 @@ app.get('/urls/new', (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   let userObj;
   if (!(req.session && req.session.user_id)) {
-    const message = "Please log in to an existing account or register for a new one."
-    res.render('login', {user : userObj, message : message});
+    // const message = "Please log in to an existing account or register for a new one."
+    // res.render('login', {user : userObj, message : message});
+    res.status(403).send('<h3>You must be logged in in order to view your URLs</h3><p>Click <a href = "http://localhost:8080/login">here</a> to login or register an account</p>');
   } else if (req.session.user_id !== urlDatabase[req.params.shortURL].userID) {
     //const message = "This module cannot be accessed by this account. Please use a different account which is the correct login.";
    //res.redirect('login', {user : userObj, message : message});
-   res.redirect('/urls'); 
+
+   res.status(403).send(`<h3>This tiny URL ${req.params.shortURL} does not belong to the currently logged in user. </h3>`);
+   //res.redirect('/urls'); 
   }
 
   let u_id = req.session.user_id;
