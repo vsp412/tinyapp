@@ -44,7 +44,7 @@ app.post("/register", (req, res) => {
   const hashedPassword = bcrypt.hashSync(password, 10);
   if (!(email && password)) {
     res.status(400).send('Please enter email and password both');
-  } else if (checkIfUserExist(email)) {
+  } else if (checkIfUserExist(email, users)) {
     res.status(400).send(`The email ${email} already exist. Please register with a new email.`);
   } 
   const userObj = {id: genRandStr, email: email, password: hashedPassword};
@@ -60,8 +60,8 @@ app.post("/login", (req, res) => {
   
   const email = req.body.email;
   const password = req.body.password;
-  const hashedPassword = getUsersPassword(email);
-  if (!checkIfUserExist(email)) {
+  const hashedPassword = getUsersPassword(email, users);
+  if (!checkIfUserExist(email, users)) {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
   } else if (bcrypt.compareSync(password, hashedPassword)) {
     const u_id = getUserByEmail(email, users); 
@@ -142,7 +142,7 @@ app.get('/', (req, res) => {
   
   let u_id = req.session.user_id;
   userObj = users[u_id]; 
-  const urlsByUser = urlsForUser(u_id);
+  const urlsByUser = urlsForUser(u_id, urlDatabase);
 
   const templateVars = {urls : urlsByUser, user : userObj};
   res.render('urls_index', templateVars);
@@ -183,7 +183,7 @@ app.get('/urls', (req, res) => {
   
   let u_id = req.session.user_id;
   userObj = users[u_id]; 
-  const urlsByUser = urlsForUser(u_id);
+  const urlsByUser = urlsForUser(u_id, urlDatabase);
  
   const templateVars = {urls : urlsByUser, user : userObj};
   res.render('urls_index', templateVars);
@@ -217,7 +217,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
   let u_id = req.session.user_id;
   userObj = users[u_id]; 
-  const urlsByUser = urlsForUser(u_id);
+  const urlsByUser = urlsForUser(u_id, urlDatabase);
 
   const templateVars = {shortURL: req.params.shortURL, urls : urlsByUser, user : userObj};
   res.render('urls_show', templateVars);

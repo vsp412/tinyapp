@@ -24,9 +24,9 @@ function checkIfUserExist(userEmail, users) {
 
 
 
-function getUsersPassword(user) {
+function getUsersPassword(userEmail, users) {
   for (let i in users) {
-    if (users[i]['email'] === user) {
+    if (users[i]['email'] === userEmail) {
       return users[i]['password'];
     }
   }
@@ -35,10 +35,10 @@ function getUsersPassword(user) {
 
 
 
-function urlsForUser(id) {
+function urlsForUser(u_id, urlDatabase) {
   let userURLS = {};
   for (let i in urlDatabase) {
-    if (urlDatabase[i]['userID'] === id) {
+    if (urlDatabase[i]['userID'] === u_id) {
       userURLS[i] = {longURL : urlDatabase[i]['longURL'], userID : urlDatabase[i]['userID']};
     }
   }
