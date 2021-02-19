@@ -87,7 +87,8 @@ app.post("/register", (req, res) => {
   } 
   const userObj = {id: genRandStr, email: email, password: hashedPassword};
   users[genRandStr] = userObj;
-  res.cookie('user_id', genRandStr);
+  //res.cookie('user_id', genRandStr);
+  res.session.user_id = genRandStr;
   console.log(users);
   res.redirect('/urls/'); 
 
