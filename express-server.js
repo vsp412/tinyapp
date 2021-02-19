@@ -51,7 +51,7 @@ app.post("/register", (req, res) => {
   users[genRandStr] = userObj;
   
   req.session.user_id = genRandStr;
-  console.log(users);
+
   res.redirect('/urls/'); 
 
 });

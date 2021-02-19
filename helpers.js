@@ -30,7 +30,7 @@ function getUsersPassword(userEmail, users) {
       return users[i]['password'];
     }
   }
-  return false;
+  return undefined;
 }
 
 
