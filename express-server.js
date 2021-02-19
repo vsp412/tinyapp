@@ -118,7 +118,6 @@ app.post("/urls", (req, res) => {
   console.log(u_id)
   console.log("*******");
   urlDatabase[genRandStr] = { longURL : req.body.longURL, userID : u_id };
-  //console.log(urlDatabase);
   res.redirect(`/urls/${genRandStr}`);        
 });
 
@@ -126,10 +125,10 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   const u_id = req.cookies['user_id'];
   const userID = urlDatabase[shortURL].userID;
-  console.log(shortURL);
-  console.log('Cookies', req.cookies) //getting printed as undefined
-  console.log(userID)
-  console.log(u_id === userID);
+  // console.log(shortURL);
+  // console.log('Cookies', req.cookies) //getting printed as undefined
+  // console.log(userID)
+  // console.log(u_id === userID);
   if (u_id !== userID) {
     res.status(403).send('Please log in to an existing account or register if you need to perform this operation');
   } else {
@@ -141,10 +140,17 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  
-  const newLongURL = req.body.editedURL;
   const shortURL = req.params.id;
-  urlDatabase[shortURL]['longURL'] = newLongURL;
+  const u_id = req.cookies['user_id'];
+  const userID = urlDatabase[shortURL].userID;
+  const newLongURL = req.body.editedURL;
+  
+  if (u_id !== userID) {
+    res.status(403).send('Please log in to an existing account or register if you need to perform this operation');
+  } else {
+    urlDatabase[shortURL]['longURL'] = newLongURL;
+  }
+
   res.redirect(`/urls/${shortURL}`)
 });
 
