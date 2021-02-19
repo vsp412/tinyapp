@@ -22,7 +22,7 @@ function getUsersPassword(user) {
   return false;
 }
 
-function getUsersID(user) {
+function getUserByEmail(user, users) {
   for (let i in users) {
     if (users[i]['email'] === user) {
       return users[i]['id'];
@@ -105,7 +105,7 @@ app.post("/login", (req, res) => {
   if (!checkIfUserExist(email)) {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
   } else if (bcrypt.compareSync(password, hashedPassword)) {
-    const u_id = getUsersID(email); 
+    const u_id = getUserByEmail(email, users); 
     //res.cookie('user_id', u_id); 
     req.session.user_id = u_id;
   } else {
