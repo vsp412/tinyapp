@@ -1,15 +1,16 @@
 
-
+//requiring all the necessary packages for this file to run
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
+//requiring all functions from the helper.js file
 const { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist, urlsForUser, getUsersPassword } = require('./helpers');
 
+//setting up useful information
 const app = express();
 const PORT = 8080;
-
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
@@ -18,11 +19,13 @@ app.use(cookieSession({
 }));
 app.set("view engine", "ejs");
 
+//object containing sample entries made for testing purposes while coding
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" }
 };
 
+//object containing sample entries made for testing purposes while coding
 const users = { 
   "userRandomID": {
     id: "userRandomID", 
@@ -36,6 +39,7 @@ const users = {
   }
 }
 
+//endpoint for handling users who would like to register an account
 app.post("/register", (req, res) => {
   
   const genRandStr = generateRandomString();
@@ -49,13 +53,12 @@ app.post("/register", (req, res) => {
   } 
   const userObj = {id: genRandStr, email: email, password: hashedPassword};
   users[genRandStr] = userObj;
-  
   req.session.user_id = genRandStr;
-
   res.redirect('/urls/'); 
 
 });
 
+//endpoint for handling users who want to sign in to an account
 app.post("/login", (req, res) => {
   
   const email = req.body.email;
@@ -75,6 +78,7 @@ app.post("/login", (req, res) => {
 
 });
 
+//endpoint for allowing users to log out of their accounts
 app.post('/logout',(req, res) => {
   
   req.session.user_id = "";
@@ -82,21 +86,18 @@ app.post('/logout',(req, res) => {
 
 });
 
+//endpoint for handling post requests received at /urls
 app.post("/urls", (req, res) => {
-  
   if (!(req.session && req.session.user_id)) {
     res.status(403).send('You must be logged in in order to create new tiny URLs');
   } 
-  
-  console.log(req.body);  
   const genRandStr = generateRandomString();
   const u_id = req.session.user_id;
-  console.log(u_id)
-  console.log("*******");
   urlDatabase[genRandStr] = { longURL : req.body.longURL, userID : u_id };
   res.redirect(`/urls/${genRandStr}`);        
 });
 
+//endpoint for handling post requests received to delete tiny URLs
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   const u_id = req.session.user_id;
@@ -114,6 +115,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 });
 
+//endpoint for handling post requests received to modify URLs
 app.post("/urls/:id", (req, res) => {
   const shortURL = req.params.id;
   const u_id = req.session.user_id;
@@ -131,7 +133,7 @@ app.post("/urls/:id", (req, res) => {
   res.redirect(`/urls/${shortURL}`)
 });
 
-
+//handles Get requests received at '/'
 app.get('/', (req, res) => {
   let userObj;
   if (!(req.session && req.session.user_id)) {
@@ -149,6 +151,7 @@ app.get('/', (req, res) => {
   
 });
 
+//handles Get requests received at '/register'
 app.get('/register', (req, res) => { 
   let userObj;
   if (req.session && req.session.user_id) {
@@ -160,6 +163,7 @@ app.get('/register', (req, res) => {
   
 });
 
+//handles Get requests received at '/login'
 app.get('/login', (req, res) => { 
   let userObj;
   let message;
@@ -173,6 +177,7 @@ app.get('/login', (req, res) => {
  
 });
 
+//handles Get requests received at '/urls'
 app.get('/urls', (req, res) => {
   let userObj;
   if (!(req.session && req.session.user_id)) {
@@ -190,6 +195,7 @@ app.get('/urls', (req, res) => {
   
 });
 
+//handles Get requests received at '/urls/new'
 app.get('/urls/new', (req, res) => { 
   let userObj;
   if (req.session && req.session.user_id) {
@@ -201,6 +207,8 @@ app.get('/urls/new', (req, res) => {
   const templateVars = {user : userObj};
   res.render('urls_new', templateVars);
 });
+
+//handles Get requests received at '/urls/tiny Url'. handles the scenarios when someone tries to access a tiny URL that isn't associated with their account, or when somebody accesses a tiny url without logging in
 app.get("/urls/:shortURL", (req, res) => {
   let userObj;
   if (!(req.session && req.session.user_id)) {
@@ -224,7 +232,7 @@ app.get("/urls/:shortURL", (req, res) => {
   
 });
 
-
+//handles get requests received at '/u/tiny url' 
 app.get("/u/:shortURL", (req, res) => {
 
 
