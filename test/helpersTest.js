@@ -19,8 +19,6 @@ describe('getUserByEmail', function() {
   it('should return a user with valid email', function() {
     const user = getUserByEmail("user@example.com", testUsers)
     const expectedOutput = "userRandomID";
-
-
     assert.strictEqual(expectedOutput, user);
 
   });
@@ -28,8 +26,6 @@ describe('getUserByEmail', function() {
   it('should return undefined if email not found', function() {
     const user = getUserByEmail("user3@example.com", testUsers)
     const expectedOutput = undefined;
-
-    
     assert.strictEqual(expectedOutput, user);
 
   });

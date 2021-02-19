@@ -100,7 +100,7 @@ app.post("/login", (req, res) => {
   if (!checkIfUserExist(email)) {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
   } else if (bcrypt.compareSync(password, hashedPassword)) {
-    const u_id = helpers.getUserByEmail(email, users); 
+    const u_id = getUserByEmail(email, users); 
     //res.cookie('user_id', u_id); 
     req.session.user_id = u_id;
   } else {
@@ -188,8 +188,9 @@ app.get('/login', (req, res) => {
 app.get('/urls', (req, res) => {
   let userObj;
   if (!(req.session && req.session.user_id)) {
-    const message = "Please log in to an existing account or register for a new one."
-    res.render('login', {user : userObj, message : message});
+    // const message = "Please log in to an existing account or register for a new one."
+    // res.render('login', {user : userObj, message : message});
+    res.status(403).send('<h3>You must be logged in in order to view your URLs</h3>');
   } 
   
   let u_id = req.session.user_id;
