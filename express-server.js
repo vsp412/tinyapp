@@ -130,7 +130,7 @@ app.post("/urls/:id", (req, res) => {
     urlDatabase[shortURL]['longURL'] = newLongURL;
   }
 
-  res.redirect(`/urls/${shortURL}`)
+  res.redirect(`/urls`)
 });
 
 //handles Get requests received at '/'
