@@ -26,7 +26,6 @@ function checkIfUserExist(userEmail, users) {
   return false;
 }
 
-
 //returns password from users object, searches by email, the password is a hashed value so its safe to return it.
 function getUsersPassword(userEmail, users) {
   for (let i in users) {
@@ -36,7 +35,6 @@ function getUsersPassword(userEmail, users) {
   }
   return undefined;
 }
-
 
 //returns those set of urls from the url database object which belong to the user having the user id equal to the passed u_id parameter.
 function urlsForUser(u_id, urlDatabase) {
@@ -55,5 +53,13 @@ function checkIfURLExist(shortURL, urlDatabase) {
   return bool;
 }
 
+//checks if a user is logged in or not
+function checkIfUserLoggedIn(req) {
+  if (req.session && req.session.user_id) {
+    return true;
+  }
+  return false;
+}
+
 //exporting all helper functions
-module.exports = { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist, urlsForUser, getUsersPassword };
+module.exports = { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist, urlsForUser, getUsersPassword, checkIfUserLoggedIn };

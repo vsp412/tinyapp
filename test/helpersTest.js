@@ -22,23 +22,19 @@ const testUrlDatabase = {
   i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" }
 };
 
-
 //testing getUserByEmail helper function
 describe('getUserByEmail', function() {
   it('should return a user with valid email', function() {
     const user = getUserByEmail("user@example.com", testUsers)
     const expectedOutput = "userRandomID";
     assert.strictEqual(expectedOutput, user);
-
   });
 
   it('should return undefined if email not found', function() {
     const user = getUserByEmail("user3@example.com", testUsers)
     const expectedOutput = undefined;
     assert.strictEqual(expectedOutput, user);
-
   });
-
 });
 
 //testing checkIfUserExist helper function
@@ -47,7 +43,6 @@ describe('checkIfUserExist', function() {
     const user = checkIfUserExist("user@example.com", testUsers)
     const expectedOutput = true;
     assert.strictEqual(expectedOutput, user);
-
   });
 
   it('should return false if email not found in users object', function() {
@@ -63,14 +58,12 @@ describe('checkIfURLExist', function() {
     const user = checkIfURLExist("i3BoGr", testUrlDatabase)
     const expectedOutput = true;
     assert.strictEqual(expectedOutput, user);
-
   });
 
   it('should return false if a tiny URL already exists in the url database object', function() {
     const user = checkIfURLExist("i3BoGr3ed", testUrlDatabase)
     const expectedOutput = false;
     assert.strictEqual(expectedOutput, user);
-
   });
 });
 
@@ -80,14 +73,12 @@ describe('getUsersPassword', function() {
     const user = getUsersPassword("user2@example.com", testUsers);
     const expectedOutput = "dishwasher-funk";
     assert.strictEqual(expectedOutput, user);
-
   });
 
   it('should return undefined if email does not exists in the users object', function() {
     const user = getUsersPassword("user28@example.com", testUsers);
     const expectedOutput = undefined;
     assert.strictEqual(expectedOutput, user);
-
   });
 });
 
