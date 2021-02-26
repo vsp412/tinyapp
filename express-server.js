@@ -12,7 +12,7 @@ const { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist,
 const app = express();
 const PORT = 8080;
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'session',
   keys: ['crypto', 'mining is', 'awesome']
@@ -26,22 +26,22 @@ const urlDatabase = {
 };
 
 //object containing sample entries made for testing purposes while coding
-const users = { 
+const users = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+    id: "userRandomID",
+    email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
     password: "dishwasher-funk"
   }
 }
 
 //endpoint for handling users who would like to register an account
 app.post("/register", (req, res) => {
-  
+
   const genRandStr = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
@@ -50,25 +50,25 @@ app.post("/register", (req, res) => {
     res.status(400).send('Please enter email and password both');
   } else if (checkIfUserExist(email, users)) {
     res.status(400).send(`The email ${email} already exist. Please register with a new email.`);
-  } 
-  const userObj = {id: genRandStr, email: email, password: hashedPassword};
+  }
+  const userObj = { id: genRandStr, email: email, password: hashedPassword };
   users[genRandStr] = userObj;
   req.session.user_id = genRandStr;
-  res.redirect('/urls/'); 
+  res.redirect('/urls/');
 
 });
 
 //endpoint for handling users who want to sign in to an account
 app.post("/login", (req, res) => {
-  
+
   const email = req.body.email;
   const password = req.body.password;
   const hashedPassword = getUsersPassword(email, users);
   if (!checkIfUserExist(email, users)) {
     res.status(403).send(`No user found with email id: ${email}. Please enter correct email`);
   } else if (bcrypt.compareSync(password, hashedPassword)) {
-    const u_id = getUserByEmail(email, users); 
-  
+    const u_id = getUserByEmail(email, users);
+
     req.session.user_id = u_id;
   } else {
     res.status(403).send('Passwords do not match. Please enter the correct password.');
@@ -79,8 +79,8 @@ app.post("/login", (req, res) => {
 });
 
 //endpoint for allowing users to log out of their accounts
-app.post('/logout',(req, res) => {
-  
+app.post('/logout', (req, res) => {
+
   req.session.user_id = "";
   res.redirect('/urls');
 
@@ -90,11 +90,11 @@ app.post('/logout',(req, res) => {
 app.post("/urls", (req, res) => {
   if (!(req.session && req.session.user_id)) {
     res.status(403).send('You must be logged in in order to create new tiny URLs');
-  } 
+  }
   const genRandStr = generateRandomString();
   const u_id = req.session.user_id;
-  urlDatabase[genRandStr] = { longURL : req.body.longURL, userID : u_id };
-  res.redirect(`/urls/${genRandStr}`);        
+  urlDatabase[genRandStr] = { longURL: req.body.longURL, userID: u_id };
+  res.redirect(`/urls/${genRandStr}`);
 });
 
 //endpoint for handling post requests received to delete tiny URLs
@@ -102,16 +102,16 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   const u_id = req.session.user_id;
   const userID = urlDatabase[shortURL].userID;
- 
+
   if (!(req.session && req.session.user_id)) {
     res.status(403).send('You must be logged in to an account order to delete a tiny URL');
   } else if (u_id !== userID) {
     res.status(403).send('The tiny URL you are trying to delete does not belong to you');
   } else {
-    delete urlDatabase[shortURL]; 
+    delete urlDatabase[shortURL];
   }
-  
-  res.redirect('/urls'); 
+
+  res.redirect('/urls');
 
 });
 
@@ -121,7 +121,7 @@ app.post("/urls/:id", (req, res) => {
   const u_id = req.session.user_id;
   const userID = urlDatabase[shortURL].userID;
   const newLongURL = req.body.editedURL;
-  
+
   if (!(req.session && req.session.user_id)) {
     res.status(403).send('You must be logged in to an account order to update the URL');
   } else if (u_id !== userID) {
@@ -137,74 +137,74 @@ app.post("/urls/:id", (req, res) => {
 app.get('/', (req, res) => {
   let userObj;
   if (!(req.session && req.session.user_id)) {
-    
-    
+
+
     res.redirect('/login');
-  } 
-  
+  }
+
   let u_id = req.session.user_id;
-  userObj = users[u_id]; 
+  userObj = users[u_id];
   const urlsByUser = urlsForUser(u_id, urlDatabase);
 
-  const templateVars = {urls : urlsByUser, user : userObj};
+  const templateVars = { urls: urlsByUser, user: userObj };
   res.render('urls_index', templateVars);
-  
+
 });
 
 //handles Get requests received at '/register'
-app.get('/register', (req, res) => { 
+app.get('/register', (req, res) => {
   let userObj;
   if (req.session && req.session.user_id) {
     let u_id = req.session.user_id;
-    userObj = users[u_id];    
-  } 
-  const templateVars = {user : userObj};
+    userObj = users[u_id];
+  }
+  const templateVars = { user: userObj };
   res.render('registration', templateVars);
-  
+
 });
 
 //handles Get requests received at '/login'
-app.get('/login', (req, res) => { 
+app.get('/login', (req, res) => {
   let userObj;
   let message;
   if (req.session && req.session.user_id) {
     let u_id = req.session.user_id;
-    userObj = users[u_id];    
-  } 
-  const templateVars = {user : userObj, message : message};
+    userObj = users[u_id];
+  }
+  const templateVars = { user: userObj, message: message };
   res.render('login', templateVars);
- 
- 
+
+
 });
 
 //handles Get requests received at '/urls'
 app.get('/urls', (req, res) => {
   let userObj;
   if (!(req.session && req.session.user_id)) {
-  
+
     res.status(403).send('<h3>You must be logged in in order to view your URLs</h3><p>Click <a href = "http://localhost:8080/login">here</a> to login or register an account</p>');
-  
-  } 
-  
+
+  }
+
   let u_id = req.session.user_id;
-  userObj = users[u_id]; 
+  userObj = users[u_id];
   const urlsByUser = urlsForUser(u_id, urlDatabase);
- 
-  const templateVars = {urls : urlsByUser, user : userObj};
+
+  const templateVars = { urls: urlsByUser, user: userObj };
   res.render('urls_index', templateVars);
-  
+
 });
 
 //handles Get requests received at '/urls/new'
-app.get('/urls/new', (req, res) => { 
+app.get('/urls/new', (req, res) => {
   let userObj;
   if (req.session && req.session.user_id) {
     let u_id = req.session.user_id;
-    userObj = users[u_id];   
+    userObj = users[u_id];
   } else {
     res.redirect('/login');
   }
-  const templateVars = {user : userObj};
+  const templateVars = { user: userObj };
   res.render('urls_new', templateVars);
 });
 
@@ -212,24 +212,24 @@ app.get('/urls/new', (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   let userObj;
   if (!(req.session && req.session.user_id)) {
-  
+
     res.status(403).send('<h3>You must be logged in in order to view your URLs</h3><p>Click <a href = "http://localhost:8080/login">here</a> to login or register an account</p>');
   } else if (!checkIfURLExist(req.params.shortURL, urlDatabase)) {
 
     res.status(403).send(`<h3>No URL ${req.params.shortURL} belonging to any user found in our database. </h3>`);
-     
+
   } else if (req.session.user_id !== urlDatabase[req.params.shortURL].userID) {
     res.status(403).send(`<h3>This tiny URL ${req.params.shortURL} does not belong to the currently logged in user. </h3>`);
-  
+
   }
 
   let u_id = req.session.user_id;
-  userObj = users[u_id]; 
+  userObj = users[u_id];
   const urlsByUser = urlsForUser(u_id, urlDatabase);
 
-  const templateVars = {shortURL: req.params.shortURL, urls : urlsByUser, user : userObj};
+  const templateVars = { shortURL: req.params.shortURL, urls: urlsByUser, user: userObj };
   res.render('urls_show', templateVars);
-  
+
 });
 
 //handles get requests received at '/u/tiny url' 
@@ -239,7 +239,7 @@ app.get("/u/:shortURL", (req, res) => {
   if (!checkIfURLExist(req.params.shortURL, urlDatabase)) {
 
     res.status(403).send(`<h3>No URL ${req.params.shortURL} was found in our database. </h3>`);
-     
+
   }
   const longURL = urlDatabase[req.params.shortURL]['longURL'];
   res.redirect(longURL);
