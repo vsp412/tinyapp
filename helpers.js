@@ -41,7 +41,7 @@ function urlsForUser(u_id, urlDatabase) {
   let userURLS = {};
   for (let i in urlDatabase) {
     if (urlDatabase[i]['userID'] === u_id) {
-      userURLS[i] = {longURL : urlDatabase[i]['longURL'], userID : urlDatabase[i]['userID'], created_on : urlDatabase[i]['created_on'], total_views : urlDatabase[i]['total_views']};
+      userURLS[i] = {longURL : urlDatabase[i]['longURL'], userID : urlDatabase[i]['userID'], created_on : urlDatabase[i]['created_on'], total_views : urlDatabase[i]['total_views'], unique_views : urlDatabase[i]['unique_views']};                                           
     }
   }
   return userURLS;

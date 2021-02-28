@@ -5,8 +5,6 @@ const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
-
-
 //requiring all functions from the helper.js file
 const { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist, urlsForUser, getUsersPassword, createDate, checkIfUserLoggedIn } = require('./helpers');
 
@@ -26,6 +24,9 @@ const urlDatabase = {};
 
 //object for storing the users 
 const users = {};
+
+//object for storing unique visits
+const visits = {};
 
 //endpoint for handling users who would like to register an account
 app.post("/register", (req, res) => {
@@ -82,7 +83,7 @@ app.post("/urls", (req, res) => {
   const curDate = createDate();
   console.log(curDate);
 
-  urlDatabase[genRandStr] = { longURL: req.body.longURL, userID: u_id, created_on: curDate, total_views: 0 };
+  urlDatabase[genRandStr] = { longURL: req.body.longURL, userID: u_id, created_on: curDate, total_views: 0, unique_views: 0 };
   res.redirect(`/urls/${genRandStr}`);
 });
 
@@ -210,18 +211,31 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, urls: urlsByUser, user: userObj };
   res.render('urls_show', templateVars);
 });
-
+let visitor = [];
 //handles get requests received at '/u/tiny url' 
 app.get("/u/:shortURL", (req, res) => {
+  
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL]['longURL'];
   if (!checkIfURLExist(req.params.shortURL, urlDatabase)) {
     res.status(403).send(`<h3>No URL ${req.params.shortURL} was found in our database. </h3>`);
     return; 
   }
-  // req.session.views = (req.session.views || 0) + 1;
-  // console.log(req.session.views);
-  const shortURL = req.params.shortURL;
-  urlDatabase[shortURL]['total_views'] += 1
-  const longURL = urlDatabase[req.params.shortURL]['longURL'];
+  urlDatabase[shortURL]['total_views'] += 1;
+  console.log(req.session.unique_user);
+  if (visitor.includes(req.session.unique_user)) {
+    console.log(req.session.unique_user);
+    res.redirect(longURL);
+    return;
+  }
+
+  
+  const genRandStr = generateRandomString();
+  req.session.unique_user = genRandStr;
+  visits[shortURL] = {visitor: genRandStr, timeStamp: new Date()};
+  console.log(visits);
+  visitor.push(req.session.unique_user);
+  urlDatabase[shortURL]['unique_views'] += 1;
   res.redirect(longURL);
 });
 
