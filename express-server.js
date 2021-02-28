@@ -4,11 +4,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-const moment = require('moment'); 
-moment().format(); 
+
+
 
 //requiring all functions from the helper.js file
-const { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist, urlsForUser, getUsersPassword, checkIfUserLoggedIn } = require('./helpers');
+const { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist, urlsForUser, getUsersPassword, createDate, checkIfUserLoggedIn } = require('./helpers');
 
 //setting up useful information
 const app = express();
@@ -79,7 +79,9 @@ app.post("/urls", (req, res) => {
   }
   const genRandStr = generateRandomString();
   const u_id = req.session.user_id;
-  urlDatabase[genRandStr] = { longURL: req.body.longURL, userID: u_id };
+  const curDate = createDate();
+  console.log(curDate);
+  urlDatabase[genRandStr] = { longURL: req.body.longURL, userID: u_id, created_on: curDate };
   res.redirect(`/urls/${genRandStr}`);
 });
 

@@ -61,5 +61,12 @@ function checkIfUserLoggedIn(req) {
   return false;
 }
 
+//returns current date. No timestamp, only the date
+function createDate() {
+  const date = new Date();
+  const rDate = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+  return rDate;
+}
+
 //exporting all helper functions
-module.exports = { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist, urlsForUser, getUsersPassword, checkIfUserLoggedIn };
+module.exports = { getUserByEmail, generateRandomString, checkIfURLExist, checkIfUserExist, urlsForUser, getUsersPassword, createDate, checkIfUserLoggedIn };
