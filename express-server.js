@@ -81,7 +81,8 @@ app.post("/urls", (req, res) => {
   const u_id = req.session.user_id;
   const curDate = createDate();
   console.log(curDate);
-  urlDatabase[genRandStr] = { longURL: req.body.longURL, userID: u_id, created_on: curDate };
+
+  urlDatabase[genRandStr] = { longURL: req.body.longURL, userID: u_id, created_on: curDate, total_views: 0 };
   res.redirect(`/urls/${genRandStr}`);
 });
 
@@ -216,6 +217,10 @@ app.get("/u/:shortURL", (req, res) => {
     res.status(403).send(`<h3>No URL ${req.params.shortURL} was found in our database. </h3>`);
     return; 
   }
+  // req.session.views = (req.session.views || 0) + 1;
+  // console.log(req.session.views);
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL]['total_views'] += 1
   const longURL = urlDatabase[req.params.shortURL]['longURL'];
   res.redirect(longURL);
 });
